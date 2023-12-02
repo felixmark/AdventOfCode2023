@@ -19,8 +19,8 @@ impl From<ParseIntError> for ParseError {
 // ============================ Sum ============================
 #[derive(Debug)]
 struct Sum {
-    first: i32,
-    last: i32
+    first: Option<u32>,
+    last: Option<u32>
 }
 
 
@@ -31,23 +31,23 @@ impl FromStr for Sum {
         // Get first and last position of digits
         let mut first_pos: usize = 0; 
         let mut last_pos: usize = string.len() - 1; 
-        let mut first: i32 = -1; 
-        let mut last: i32 = -1;
-        for i in 0..string.len() {
-            let string_chars: Vec<_> = string.chars().collect();
+        let mut first: Option<u32> = Default::default(); 
+        let mut last: Option<u32> = Default::default();
+        let string_chars: Vec<_> = string.chars().collect();
+        for _i in 0..string.len() {
             let first_char = string_chars[first_pos];
             let last_char = string_chars[last_pos];
-            if first_char.is_numeric() && first == -1 {
-                first = first_char.to_digit(10).unwrap() as i32;
-            } else if first == -1 {
+            if first_char.is_numeric() && !first.is_some() {
+                first = first_char.to_digit(10);
+            } else if !first.is_some() {
                 first_pos += 1;
             }
-            if last_char.is_numeric() && last == -1 {
-                last = last_char.to_digit(10).unwrap() as i32;
-            } else if last == -1 {
+            if last_char.is_numeric() {
+                last = last_char.to_digit(10);
+            } else if !last.is_some() {
                 last_pos -= 1;
             }
-            if first > -1 && last > -1 {
+            if first.is_some() && last.is_some() {
                 break;
             }
         }
@@ -60,14 +60,14 @@ impl FromStr for Sum {
                 continue;
             }
             let mut pos = string.find(word).unwrap();
-            if pos >= 0 && pos < first_pos {
+            if pos < first_pos {
                 first_pos = pos;
-                first = (i + 1) as i32
+                first = Some((i + 1) as u32);
             }
             pos = string.rfind(word).unwrap();
             if pos > last_pos {
                 last_pos = pos;
-                last = (i + 1) as i32
+                last = Some((i + 1) as u32);
             }
         }
 
@@ -98,11 +98,11 @@ fn main() {
             panic!("The line wasn't very parseable...");
         }
     }
-    println!("Sums:\n{:#?}", sums);
+    // println!("Sums:\n{:#?}", sums);
 
-    let mut result_value:i32 = 0;
+    let mut result_value:u32 = 0;
     for sum in sums {
-        result_value += sum.first * 10 + sum.last;
+        result_value += sum.first.unwrap() * 10 + sum.last.unwrap();
     }
     println!("Result: {}", result_value);
 }
