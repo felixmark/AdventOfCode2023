@@ -2,13 +2,12 @@
     Day 1
 */
 
-use std::{fs::File, io::{BufRead, BufReader}, num::ParseIntError, str::{FromStr}};
+use std::{fs::File, io::{BufRead, BufReader}, num::ParseIntError, str::FromStr};
 
 
 // ============================ Parse Error ============================
 #[derive(Debug)]
 struct ParseError;
-
 impl From<ParseIntError> for ParseError {
     fn from(_: ParseIntError) -> Self {
         ParseError
@@ -85,7 +84,7 @@ impl FromStr for Sum {
 fn main() {
     // Parsing the lines of instructions
     println!("Parsing lines...");
-    let file = File::open("resources/input").unwrap();
+    let file = File::open("day1/resources/input").unwrap();
     let buf_read = BufReader::new(file);
     let lines = buf_read.lines();
 
