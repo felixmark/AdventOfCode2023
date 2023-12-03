@@ -51,7 +51,7 @@ impl FromStr for Game {
                 done = true;
             }
             let mut set_string = line.get(..end_index).unwrap().to_string();
-            line = line.replace(&set_string, "");
+            line = line.replacen(&set_string, "", 1);
             set_string = set_string.replace(";", "");
 
             let words = ["red", "green", "blue"];
@@ -60,6 +60,11 @@ impl FromStr for Game {
                     let mut color_string = set_string.get(..set_string.find(word).unwrap() - 1).unwrap().to_string();
                     color_string = color_string.get(color_string.rfind(" ").unwrap()..).unwrap().to_string().replace(" ", "");
                     color_values[i] = color_string.parse::<u32>().unwrap();
+
+                    
+                    if set_string.rfind(word) != set_string.find(word) {
+                        println!("Error in ID: {}, {}", id, set_string);
+                    }
                 }
             }
 
@@ -103,14 +108,14 @@ fn main() {
     let cubes_green =  13;
     let cubes_blue = 14;
 
-    let mut result_value:u32 = 0;
+    let mut result_value:u64 = 0;
     for game in &games {
         let mut game_is_possible = true;
         for set in &game.sets {
             game_is_possible &= set.red <= cubes_red && set.green <= cubes_green && set.blue <= cubes_blue;
         }
         if game_is_possible {
-            result_value += game.id;
+            result_value += game.id as u64;
         }
     }
     println!("Result: {}", result_value);
@@ -126,7 +131,7 @@ fn main() {
             if set.green > minimum_green { minimum_green = set.green; }
             if set.blue > minimum_blue { minimum_blue = set.blue; }
         }
-        result_value += minimum_red * minimum_green * minimum_blue;
+        result_value += (minimum_red * minimum_green * minimum_blue) as u64;
     }
     println!("Result: {}", result_value);   // 78057 is too low
 }
