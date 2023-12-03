@@ -43,7 +43,7 @@ impl FromStr for Game {
         let mut done = false;
         while !done {
             let mut color_values = [0, 0, 0];
-            let mut end_index = 0;
+            let end_index;
             if line.contains(";") {
                 end_index = line.find(";").unwrap() + 1;
             } else {
@@ -126,7 +126,6 @@ fn main() {
             if set.green > minimum_green { minimum_green = set.green; }
             if set.blue > minimum_blue { minimum_blue = set.blue; }
         }
-        println!("Power: {}", minimum_red * minimum_green * minimum_blue);
         result_value += minimum_red * minimum_green * minimum_blue;
     }
     println!("Result: {}", result_value);   // 78057 is too low
